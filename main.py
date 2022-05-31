@@ -56,16 +56,19 @@ def process_request(r, fiat, order_type, main_asset):
         seller = []
         method = []
         seller.append(i['adv']['price'])
+        seller.append(i['adv']['surplusAmount'])
+        seller.append(i['adv']['minSingleTransAmount'])
         for k in i['adv']['tradeMethods']:
             method.append(k['payType'])
         seller.append(method)
         seller.append(i['advertiser']['nickName'])
         seller.append(i['advertiser']['userNo'])
+        seller.append(i['adv']['dynamicMaxSingleTransAmount'])
         seller_list.append(seller)
 
     for i in range(len(seller_list)):
         print(
-            f"{i + 1}. {main_asset}/{fiat} {seller_list[i][0]}.   {entity}: {seller_list[i][2]}.   Payment method: {payment_method_def(seller_list[i][1])}")
+            f"{i + 1}. {main_asset}/{fiat} {seller_list[i][0]}.   {entity}: {seller_list[i][4]}.   Payment method: {payment_method_def(seller_list[i][3])}.   Available: {seller_list[i][1]} {main_asset}.   Limits:  {seller_list[i][2]} - {seller_list[i][6]} {fiat}")
     #print(seller_list)
     # try:
     #   eleccion = int(input("Enter number (ENTER payers) : "))-1
@@ -75,22 +78,25 @@ def process_request(r, fiat, order_type, main_asset):
 
 
 def main():
-    assets =["USDT","BTC","ETH","BUSD","BNB","RUB","SHIB"]
+    assets =["USDT","BTC"]
     main_asset = "USDT"
     fiat = "RUB"
     type = "SELL"
     paytype_all = None
     paytype_bank = ["Tinkoff"]
-    amount = "10000"
+    amount = "0"
     usdrub = 61.5
     rows =2
 
-    #for i in range(len(assets)):
-     #   all_sellers = [define(fiat, type, amount, assets[i], paytype_all,rows)]
-    #print(all_sellers)
-    all_sellers = define(fiat, type, amount, main_asset, paytype_all,rows)
-    process_request(all_sellers, fiat, type, main_asset)
+    '''all_sellers = []
+    for i in range(len(assets)):
+        all_sellers.append(define(fiat, type, amount, assets[i], paytype_all,rows))'''
 
+    all_sellers = define(fiat, type, amount, main_asset, paytype_all,rows)
+    print(all_sellers)
+
+    process_request(all_sellers, fiat, type, main_asset)
+#'surplusAmount': '548.60 'minSingleTransAmount': '500.00' 'dynamicMaxSingleTransAmount': '33856.31'
 
 if __name__ == "__main__":
     main()
